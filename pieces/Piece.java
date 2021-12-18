@@ -10,7 +10,7 @@ import meta.Position;
 public class Piece implements Action{
   protected String name;
   protected String color;
-  protected Position position;
+  protected Position position; //Posotion forms a component of Piece class
 
   public String getName() {
     return name;
@@ -42,6 +42,7 @@ public class Piece implements Action{
     this.position = position;
   }
 
+  // overloaded constructor for future enhancements,like implementation of Promotion
   public Piece(Piece piece){
     this.name = piece.getName();
     this.color = piece.getColor();

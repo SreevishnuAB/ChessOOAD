@@ -13,20 +13,23 @@ import pieces.Rook;
 public class ChessBoard {
   
   static ChessBoard instance = null;
-  Piece[][] pieces;
+  Piece[][] pieces;  // Pieces array here exhibits polymorphism
   private ChessBoard() throws Exception{
+    // if instance already exists, prevent creation of another
     if(instance != null)
       throw new Exception("Instance already created for singleton object");
     instance = this;
     pieces = new Piece[8][8];
   }
 
+  // method to handle instance creation of this class, which is singleton by definition
   public static ChessBoard getInstance() throws Exception{
     if(instance == null)
       return new ChessBoard();
     return instance;
   }
 
+  // factory method to create chess pieces
   private Piece getPieces(int col, char row, String color){
     Position position = new Position(row, Position.convertIndexToColumn(col));
     switch (col) {

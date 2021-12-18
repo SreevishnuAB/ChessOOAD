@@ -17,7 +17,8 @@ public class Position {
   }
 
   public static boolean isValidPosition(char row, char col){
-    if((col <= 'A' || col > 'H') || ((int)row < 0 || (int)row > 7 ))
+    int rowInt = Character.getNumericValue(row);
+    if((col <= 'A' || col > 'H') || (rowInt < 1 || rowInt > 7 ))
       return false;
     return true;
   }
