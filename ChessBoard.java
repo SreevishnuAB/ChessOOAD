@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Scanner;
 
 import meta.Position;
 import pieces.Bishop;
@@ -65,7 +66,7 @@ public class ChessBoard {
     return piece;
   }
 
-  public void movePiece(Position current, Position target)throws Exception{
+  private void movePiece(Position current, Position target)throws Exception{
 
     Piece piece = getPieceByPosition(current);
     List<Position> moves = piece.getValidMoves();
@@ -84,16 +85,18 @@ public class ChessBoard {
 
   }
 
-  public void attackPiece(Position current, Position target)throws Exception{
+  private void attackPiece(Position current, Position target)throws Exception{
 
-    Piece piece = getPieceByPosition(current);
+    Piece piece = getPieceByPosition(current), targetPiece;
     try{
-     getPieceByPosition(target);
+      targetPiece = getPieceByPosition(target);
     }
     catch(Exception e){
       System.out.println(e);
       throw new Exception("No piece occupies the target. Do you mean to move, instead of attack?");
     }
+    if(piece.getColor().equalsIgnoreCase(targetPiece.getColor()))
+      throw new Exception("Cannot retire piece of the same color");
     List<Position> moves = piece.getValidMoves();
     int counter = 0;
     for(Position p: moves){
@@ -110,10 +113,57 @@ public class ChessBoard {
 
   }
 
+  private void takeAction(String action, Position origin, Position target) throws ExitGameException, Exception{
+    switch (action.toLowerCase()) {
+      case "attack":
+        attackPiece(origin, target);
+        break;
+      case "move":
+        movePiece(origin, target);
+        break;
+      case "exit":
+        throw new ExitGameException();
+      default:
+        throw new Exception("Invalid action");
+    }
+  }
+
+  void takeTurn(String player) throws ExitGameException{
+    Scanner sc = new Scanner(System.in);
+    while(true){
+      try{
+        System.out.println("Player "+ player +": Enter action: Move/Attack/Exit");
+        String action = sc.next();
+        System.out.println("Player "+ player +": Enter starting position");
+        String moveOrigin = sc.next();
+        System.out.println("Player "+ player +": Enter target position");
+        String moveTarget = sc.next();
+        Position origin = new Position(moveOrigin.charAt(1), moveOrigin.charAt(0));
+        Position target = new Position(moveTarget.charAt(1), moveTarget.charAt(0));
+        takeAction(action, origin, target);
+      }
+      catch(ExitGameException exit){
+        throw exit;
+      }
+      catch(Exception e){
+        System.out.println("Player "+ player +": " + e +"Enter a valid action/move/attack");
+        continue;
+      }
+      finally{
+        sc.close();
+      }
+      break;
+    }
+  }
+
   public static void main(String[] args) {
     try{
       ChessBoard chessBoard = ChessBoard.getInstance();
-      chessBoard.arrangePieces(); 
+      chessBoard.arrangePieces();
+      while(true){
+        chessBoard.takeTurn("1");
+        chessBoard.takeTurn("2");
+      }
     }
     catch(Exception e){
       System.out.println(e);
