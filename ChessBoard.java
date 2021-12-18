@@ -1,3 +1,5 @@
+import java.util.List;
+
 import meta.Position;
 import pieces.Bishop;
 import pieces.King;
@@ -52,6 +54,60 @@ public class ChessBoard {
       pieces[7][i] = getPieces(i, '8', "black");
       pieces[6][i] = getPieces(i+7, '7', "black");
     }
+  }
+
+  private Piece getPieceByPosition(Position position)throws Exception{
+    int row = Character.getNumericValue(position.getRow());
+    int column = Position.convertColumnToIndex(position.getColumn());
+    Piece piece = pieces[row][column];
+    if(piece == null)
+      throw new Exception("Chosen position is unoccupied");
+    return piece;
+  }
+
+  public void movePiece(Position current, Position target)throws Exception{
+
+    Piece piece = getPieceByPosition(current);
+    List<Position> moves = piece.getValidMoves();
+    int counter = 0;
+    for(Position p: moves){
+      if(p.getColumn() == target.getColumn() && p.getRow() == target.getRow())
+        break;
+      counter++;
+    }
+    if(counter == moves.size())
+      throw new Exception("Invalid move");
+    
+    int row = Character.getNumericValue(target.getRow());
+    int column = Character.getNumericValue(target.getColumn());
+    pieces[row][column] = piece;
+
+  }
+
+  public void attackPiece(Position current, Position target)throws Exception{
+
+    Piece piece = getPieceByPosition(current);
+    try{
+     getPieceByPosition(target);
+    }
+    catch(Exception e){
+      System.out.println(e);
+      throw new Exception("No piece occupies the target. Do you mean to move, instead of attack?");
+    }
+    List<Position> moves = piece.getValidMoves();
+    int counter = 0;
+    for(Position p: moves){
+      if(p.getColumn() == target.getColumn() && p.getRow() == target.getRow())
+        break;
+      counter++;
+    }
+    if(counter == moves.size())
+      throw new Exception("Invalid move");
+    
+    int row = Character.getNumericValue(target.getRow());
+    int column = Character.getNumericValue(target.getColumn());
+    pieces[row][column] = piece;
+
   }
 
   public static void main(String[] args) {
