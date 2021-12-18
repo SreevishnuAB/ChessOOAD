@@ -11,12 +11,14 @@ public class ChessBoard {
   
   static ChessBoard instance = null;
   Piece[][] pieces;
-  private ChessBoard(){
+  private ChessBoard() throws Exception{
+    if(instance != null)
+      throw new Exception("Instance already created for singleton object");
     instance = this;
     pieces = new Piece[8][8];
   }
 
-  public static ChessBoard getInstance(){
+  public static ChessBoard getInstance() throws Exception{
     if(instance == null)
       return new ChessBoard();
     return instance;
@@ -53,7 +55,12 @@ public class ChessBoard {
   }
 
   public static void main(String[] args) {
-    ChessBoard chessBoard = ChessBoard.getInstance();
-    chessBoard.arrangePieces();
+    try{
+      ChessBoard chessBoard = ChessBoard.getInstance();
+      chessBoard.arrangePieces(); 
+    }
+    catch(Exception e){
+      System.out.println(e);
+    }
   }
 }
